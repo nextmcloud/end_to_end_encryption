@@ -72,6 +72,7 @@ class LockManager {
 
 		try {
 			$lock = $this->lockMapper->getByFileId($id);
+			return $lock->getToken() === $token ? $token : null;
 		} catch (DoesNotExistException $ex) {
 			$newToken = $this->getToken();
 			$lockEntity = new Lock();
@@ -82,11 +83,6 @@ class LockManager {
 			return $newToken;
 		}
 
-		if ($lock->getToken() === $token) {
-			return $token;
-		}
-
-		return null;
 	}
 
 	/**
