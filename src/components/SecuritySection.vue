@@ -7,16 +7,15 @@
 	<SettingsSection :title="t('end_to_end_encryption', 'End-to-End encryption')"
 		:description="encryptionState">
 		<Button :disabled="!hasKey" type="warning" @click="startResetProcess()">
-			{{ t('end_to_end_encryption', 'Reset End-to-End encryption') }}
+			{{ t('end_to_end_encryption', 'Reset encryption') }}
 		</Button>
 
 		<div v-if="shouldDisplayWarning && hasKey" class="notecard warning" role="alert">
 			<p><strong>{{ t('end_to_end_encryption', 'Please read carefully before resetting your End-to-End encryption keys') }}</strong></p>
 			<ul>
-				<li>{{ t('end_to_end_encryption', 'Once your End-to-End encryption keys are reset, all files stored in your encrypted folder will be inaccessible.') }}</li>
-				<li>{{ t('end_to_end_encryption', 'You should only reset your End-to-End encryption keys if you lost your secure key words (mnemonic).') }}</li>
-				<li>{{ t('end_to_end_encryption', 'Check on all connected devices if you can retrieve your mnemonic.') }}</li>
-				<li>{{ t('end_to_end_encryption', 'Any still connected device might cause problems after deleting the keys, so it is better to disconnect and reconnect the devices again.') }}</li>
+				<li>{{ t('end_to_end_encryption', 'Once your encryption keys are reset, all encrypted data will be inaccessible and will be also deleted.') }}</li>
+				<li>{{ t('end_to_end_encryption', 'Before you reset your encryption, check your apps and desktop clients to make sure you really can not access your keys anywhere.') }}</li>
+				<li>{{ t('end_to_end_encryption', 'If you want to reset the encryption even though your keys are still available in the apps or desktop clients, then delete the keys locally on the other devices. Alternatively, you can reset the apps or reconnect the desktop clients to your account.') }}</li>
 			</ul>
 
 			<CheckboxRadioSwitch :checked.sync="deleteEncryptedFiles" type="switch" class="margin-bottom">
@@ -24,17 +23,17 @@
 			</CheckboxRadioSwitch>
 
 			<Button type="error" @click="showModal">
-				{{ t('end_to_end_encryption', "Confirm and reset End-to-End encryption") }}
+				{{ t('end_to_end_encryption', "Confirm and reset") }}
 			</Button>
 
 			<Modal v-if="modal"
 				size="small"
-				class="modal"
+				class="modal esecurity"
 				@close="closeModal">
 				<div class="modal-container">
 					<p>
 						<strong>
-							{{ t('end_to_end_encryption', 'This is the final warning: Do you really want to reset your keys?') }}
+							{{ t('end_to_end_encryption', 'This the final warning: Do you really want to reset your encryption. Encrypted data are lost and will be deleted.') }}
 						</strong>
 					</p>
 					<div class="button-row">
@@ -80,13 +79,13 @@ export default {
 			hasKey: loadState('end_to_end_encryption', 'hasKey'),
 			shouldDisplayWarning: false,
 			modal: false,
-			deleteEncryptedFiles: false,
+			deleteEncryptedFiles: true,
 		}
 	},
 	computed: {
 		encryptionState() {
 			if (this.hasKey) {
-				return t('end_to_end_encryption', 'End-to-End encryption is currently enabled and correctly setup.')
+				return t('end_to_end_encryption', 'End to end encryption is currently enabled.')
 			} else {
 				return t('end_to_end_encryption', 'End-to-End encryption is currently disabled. You can set it up with the {productName} clients.', {
 					productName: OCA.Theming ? OCA.Theming.name : 'Nextcloud',

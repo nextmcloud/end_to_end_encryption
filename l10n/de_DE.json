@@ -33,7 +33,6 @@
     "Saved groups" : "Gespeicherte Gruppen",
     "End-to-end encryption" : "Ende-zu-Ende-Verschlüsselung",
     "Reset end-to-end encryption" : "Ende-zu-Ende-Verschlüsselung zurücksetzen",
-    "Please read carefully before resetting your end-to-end encryption keys" : "Bitte vor dem Zurücksetzen Ihrer Schlüssel für die Ende-zu-Ende-Verschlüsselung aufmerksam lesen",
     "Once your end-to-end encryption keys are reset, all files stored in your encrypted folder will be inaccessible." : "Sobald Ihre End-to-End-Verschlüsselungsschlüssel zurückgesetzt wurden, sind alle Dateien, die in Ihrem verschlüsselten Ordner gespeichert sind, unzugänglich.",
     "You should only reset your end-to-end encryption keys if you lost your secure key words (mnemonic)." : "Sie sollten Ihre End-to-End-Verschlüsselungsschlüssel nur zurücksetzen, wenn Sie Ihre sicheren Schlüsselwörter (Gedächtnisstütze) verloren haben.",
     "Check on all connected devices if you can retrieve your mnemonic." : "Prüfen Sie auf allen angeschlossenen Geräten, ob Sie Ihre Gedächtnishilfe abrufen können.",
@@ -55,7 +54,6 @@
     "You should only reset your end to end encryption keys if you lost your secure key words (mnemonic)" : "Sie sollten Ihre Ende-zu-Ende-Verschlüsselungsschlüssel nur zurücksetzen, wenn Sie Ihre sicheren Schlüsselwörter (Gedächtnisstütze) verloren haben",
     "Check on all connected devices if you can retrieve your mnemonic" : "Prüfen Sie auf allen angeschlossenen Geräten, ob Sie Ihre Gedächtnishilfe abrufen können",
     "End to end encryption is currently enabled and correctly setup." : "Die Ende-zu-Ende-Verschlüsselung ist derzeit aktiviert und korrekt eingerichtet.",
-    "End to end encryption is currently disabled. You can set it up with the {productName} clients." : "Die Ende-zu-Ende-Verschlüsselung ist derzeit deaktiviert. Sie können sie mit den {productName} Clients einrichten.",
     "End to end keys reset" : "Zurücksetzen der End-to-End-Verschlüsselungsschlüssel",
     "Unable to reset end to end encryption" : "Die Ende-zu-Ende-Verschlüsselung kann nicht zurückgesetzt werden",
     "End-to-End encryption endpoint" : "Endpunkt für Ende-zu-Ende-Verschlüsselung",
@@ -67,6 +65,17 @@
     "End-to-End encryption is currently enabled and correctly setup." : "Die Ende-zu-Ende-Verschlüsselung ist derzeit aktiviert und korrekt eingerichtet.",
     "End-to-End encryption is currently disabled. You can set it up with the {productName} clients." : "Die Ende-zu-Ende-Verschlüsselung ist derzeit deaktiviert. Sie können sie mit den {productName}-Clients einrichten.",
     "End-to-End encryption keys reset" : "Schlüssel der Ende-zu-Ende-Verschlüsselung zurücksetzen",
-    "Unable to reset End-to-End encryption" : "Ende-zu-Ende-Verschlüsselung kann nicht zurückgesetzt werden"
+    "Unable to reset End-to-End encryption" : "Ende-zu-Ende-Verschlüsselung kann nicht zurückgesetzt werden",
+    "End to end encryption is currently enabled." : "Die Ende-​zu-​Ende Verschlüsselung ist derzeit aktiviert.",
+    "Reset encryption" : "Verschlüsselung zurücksetzen",
+    "Please read carefully before resetting your end-to-end encryption keys" : "Bitte vor der Zurücksetzung der Ende-zu-Ende Verschlüsselung aufmerksam lesen",
+    "Once your encryption keys are reset, all encrypted data will be inaccessible and will be also deleted." : "Sobald die Verschlüsselung zurückgesetzt wird, werden sämtliche verschlüsselten Dateien/Ordner gelöscht.",
+    "Before you reset your encryption, check your apps and desktop clients to make sure you really can not access your keys anywhere." : "Sofern die Passphrase vergessen wurde, kann diese in den Apps oder Desktop Clients der MagentaCLOUD ausgelesen werden. Eine Zurücksetzung ist nicht zwingend notwendig.",
+    "If you want to reset the encryption even though your keys are still available in the apps or desktop clients, then delete the keys locally on the other devices. Alternatively, you can reset the apps or reconnect the desktop clients to your account." : "Sollten Sie die Verschlüsselung zurücksetzen wollen, obwohl ihre Passphrase in den Apps oder Desktop Clients der MagentaCLOUD noch vorhanden sind, entfernen Sie die Passphrase anschließend auch lokal auf den anderen Endgeräten. Alternativ können Sie die Apps auch zurücksetzen und sich erneut mit ihrer MagentaCLOUD verbinden.",
+    "Confirm and reset" : "Bestätigen und zurücksetzen",
+    "This the final warning: Do you really want to reset your encryption. Encrypted data are lost and will be deleted." : "Das ist die letzte Warnung: Möchten Sie wirklich die Verschlüsselung zurücksetzen? Verschlüsselte Daten gehen dabei verloren und werden gelöscht.",
+    "Cancel" : "Abbrechen",
+    "Confirm" : "Bestätigen",
+    "End to end encryption is currently disabled. You can set it up with the {productName} clients." : "Die Ende-zu-Ende Verschlüsselung ist deaktiviert. Sie können sie in den Apps oder Desktop Clients einrichten."  
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
