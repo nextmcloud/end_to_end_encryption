@@ -40,7 +40,7 @@ jobs:
     uses: nextmcloud/.github/.github/workflows/nmc-custom-assembly.yml@master
     needs: check-custom
     with:
-      trunk: 'main'
+      trunk: 'master'
       stable: ${{ inputs.branch }}
       result: ${{ format('customisation-{0}-{1}', inputs.branch, inputs.increment ) }}
     secrets: inherit
