@@ -27,7 +27,8 @@ on:
         description: Branch to build a package from
         options: 
           - stable25
-        default: stable25
+          - stable27
+        default: stable27
 
 jobs:
   check-custom:
