@@ -26,8 +26,10 @@ on:
         type: choice
         description: Branch to build a package from
         options: 
+          - master
           - stable25
           - stable27
+          - stable28
         default: stable27
 
 jobs:
