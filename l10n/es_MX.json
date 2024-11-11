@@ -15,17 +15,17 @@
     "File not locked" : "El archivo no está bloqueado",
     "Could not find metadata for \"%s\"" : "No se encontraron metadatos para \"%s\"",
     "Cannot read metadata" : "No se pueden leer los metadatos",
-    "Cannot store metadata" : "No se pueden almacenar los metadatos",
     "You are not allowed to edit the file, make sure to first lock it, and then send the right token" : "No puedes editar el archivo, asegúrate de bloquearlo primero y despues enviar la ficha correcta",
+    "Cannot store metadata" : "No se pueden almacenar los metadatos",
     "Only the owner can delete the metadata-file" : "Únicamente el dueño puede borrar el archivo de metadatos",
     "Cannot delete metadata" : "No se pueden borrar los metadatos",
     "End-to-End Encryption" : "Encripción Punto-a-Punto",
     "End-to-end encryption endpoint" : "Endpoint de encripción de punto-a-punto",
     "Limit to groups" : "Limitar a grupos",
+    "Limit app usage to groups" : "Limitar el uso de aplicaciones a grupos",
     "Save" : "Guardar",
     "End-to-end encryption" : "Encripción de punta-a-punta",
-    "Select or drop files" : "Selecciona o suelta los archivos",
-    "Metadata-file doesn't exist" : "Archivo-Metadatos no existe",
-    "Provides the necessary endpoint to enable end-to-end encryption." : "Proporciona el endpoint para habilitar en cifrado de punto a punto."
+    "Cancel" : "Cancelar",
+    "Select or drop files" : "Selecciona o suelta los archivos"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

@@ -17,18 +17,18 @@ OC.L10N.register(
     "File not locked" : "Bestand niet op slot",
     "Could not find metadata for \"%s\"" : "Kan categorie \"%s\" niet vinden",
     "Cannot read metadata" : "Kan metadata niet lezen",
-    "Cannot store metadata" : "Kan metadata niet opslaan",
     "You are not allowed to edit the file, make sure to first lock it, and then send the right token" : "Je mag het bestand niet bewerken. Zet het eerst op slot en stuur dan het juiste token",
+    "Cannot store metadata" : "Kan metadata niet opslaan",
     "Only the owner can delete the metadata-file" : "Alleen de eigenaar kan het metadatabestand wissen",
     "Cannot delete metadata" : "Kan metadata niet verwijderen",
     "End-to-End Encryption" : "Begin-tot-eind versleuteling",
     "End-to-end encryption endpoint" : "Begin-tot-eind versleutelingseindpunt",
     "Limit to groups" : "Beperk tot groepen",
-    "Limit app usage to groups." : "Beperkt gebruik programma tot groepen.",
+    "Limit app usage to groups" : "Beperk appgebruik tot groepen",
     "Save" : "Opslaan",
     "End-to-end encryption" : "Begin-tot-eind versleuteling",
+    "Cancel" : "Annuleren",
     "Select or drop files" : "Selecteer bestanden of sleep ze naar dit venster",
-    "Metadata-file doesn't exist" : "Metadata-bestand bestaat niet",
-    "Provides the necessary endpoint to enable end-to-end encryption." : "Levert de noodzakelijke functionaliteit voor end-to-end versleuteling."
+    "Limit app usage to groups." : "Beperkt gebruik programma tot groepen."
 },
 "nplurals=2; plural=(n != 1);");

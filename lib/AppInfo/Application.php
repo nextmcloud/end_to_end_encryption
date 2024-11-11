@@ -2,23 +2,8 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2017 Bjoern Schiessle <bjoern@schiessle.org>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 
@@ -31,11 +16,14 @@ use OCA\EndToEndEncryption\E2EEPublicShareTemplateProvider;
 use OCA\EndToEndEncryption\EncryptionManager;
 use OCA\EndToEndEncryption\IKeyStorage;
 use OCA\EndToEndEncryption\IMetaDataStorage;
+use OCA\EndToEndEncryption\IMetaDataStorageV1;
 use OCA\EndToEndEncryption\KeyStorage;
 use OCA\EndToEndEncryption\Listener\UserDeletedListener;
 use OCA\EndToEndEncryption\MetaDataStorage;
-use OCA\EndToEndEncryption\Middleware\UserAgentCheckMiddleware;
+use OCA\EndToEndEncryption\MetaDataStorageV1;
 use OCA\EndToEndEncryption\Middleware\CanUseAppMiddleware;
+use OCA\EndToEndEncryption\Middleware\ClientHasCapabilityMiddleware;
+use OCA\EndToEndEncryption\Middleware\UserAgentCheckMiddleware;
 use OCA\Files_Trashbin\Events\MoveToTrashEvent;
 use OCA\Files_Versions\Events\CreateVersionEvent;
 use OCP\AppFramework\App;
@@ -66,7 +54,9 @@ class Application extends App implements IBootstrap {
 		$context->registerCapability(Capabilities::class);
 		$context->registerMiddleware(UserAgentCheckMiddleware::class);
 		$context->registerMiddleware(CanUseAppMiddleware::class);
+		$context->registerMiddleware(ClientHasCapabilityMiddleware::class);
 		$context->registerServiceAlias(IKeyStorage::class, KeyStorage::class);
+		$context->registerServiceAlias(IMetaDataStorageV1::class, MetaDataStorageV1::class);
 		$context->registerServiceAlias(IMetaDataStorage::class, MetaDataStorage::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
 		$context->registerPublicShareTemplateProvider(E2EEPublicShareTemplateProvider::class);

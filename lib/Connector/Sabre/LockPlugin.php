@@ -2,36 +2,22 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2017 Bjoern Schiessle <bjoern@schiessle.org>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 
 namespace OCA\EndToEndEncryption\Connector\Sabre;
 
-use OCP\AppFramework\Http;
 use OCA\DAV\Connector\Sabre\Directory;
 use OCA\DAV\Connector\Sabre\Exception\FileLocked;
 use OCA\DAV\Connector\Sabre\Exception\Forbidden;
 use OCA\DAV\Connector\Sabre\File;
 use OCA\DAV\Upload\FutureFile;
+use OCA\EndToEndEncryption\E2EEnabledPathCache;
 use OCA\EndToEndEncryption\LockManager;
 use OCA\EndToEndEncryption\UserAgentManager;
+use OCP\AppFramework\Http;
 use OCP\Files\IRootFolder;
 use OCP\IUserSession;
 use Sabre\DAV\Exception\Conflict;
@@ -39,17 +25,16 @@ use Sabre\DAV\Exception\NotFound;
 use Sabre\DAV\INode;
 use Sabre\DAV\Server;
 use Sabre\HTTP\RequestInterface;
-use OCA\EndToEndEncryption\E2EEnabledPathCache;
 
 class LockPlugin extends APlugin {
 	private LockManager $lockManager;
 	private UserAgentManager $userAgentManager;
 
 	public function __construct(IRootFolder $rootFolder,
-								IUserSession $userSession,
-								LockManager $lockManager,
-								UserAgentManager $userAgentManager,
-								E2EEnabledPathCache $pathCache) {
+		IUserSession $userSession,
+		LockManager $lockManager,
+		UserAgentManager $userAgentManager,
+		E2EEnabledPathCache $pathCache) {
 		parent::__construct($rootFolder, $userSession, $pathCache);
 		$this->lockManager = $lockManager;
 		$this->userAgentManager = $userAgentManager;
@@ -87,7 +72,7 @@ class LockPlugin extends APlugin {
 		if (!$this->isFile($url, $node)) {
 			return;
 		}
-		/** @var File|Directory|FutureFile $node*/
+		/** @var File|Directory|FutureFile $node */
 
 		// We don't care if we are not inside an end to end encrypted folder
 		if ($method === 'COPY' || $method === 'MOVE') {
@@ -108,7 +93,10 @@ class LockPlugin extends APlugin {
 				}
 
 				// Prevent moving or copying stuff from non-encrypted to encrypted folders
-				if ($this->isE2EEnabledPath($node) xor $this->isE2EEnabledPath($destNode)) {
+				// if original operation is not a DELETE
+				if ($this->isE2EEnabledPath($node) !== $this->isE2EEnabledPath($destNode)
+					&& $request->getHeader('X-Nc-Sabre-Original-Method') !== 'DELETE'
+				) {
 					throw new Forbidden('Cannot copy or move files from non-encrypted folders to end to end encrypted folders or vice versa.');
 				}
 			}
@@ -159,7 +147,7 @@ class LockPlugin extends APlugin {
 			throw new Forbidden('Write access to end-to-end encrypted folder requires token - no token sent');
 		}
 
-		if ($this->lockManager->isLocked($node->getId(), $token)) {
+		if ($this->lockManager->isLocked($node->getId(), $token, null, true)) {
 			throw new FileLocked('Write access to end-to-end encrypted folder requires token - resource not locked or wrong token sent', Http::STATUS_FORBIDDEN);
 		}
 	}

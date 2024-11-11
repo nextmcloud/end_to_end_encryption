@@ -2,23 +2,8 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2020 Georg Ehrke <georg-nextcloud@ehrke.email>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 namespace OCA\EndToEndEncryption\Tests\Connector\Sabre;
@@ -26,8 +11,8 @@ namespace OCA\EndToEndEncryption\Tests\Connector\Sabre;
 use OCA\DAV\Connector\Sabre\Directory;
 use OCA\DAV\Connector\Sabre\Exception\Forbidden;
 use OCA\EndToEndEncryption\Connector\Sabre\PropFindPlugin;
-use OCA\EndToEndEncryption\UserAgentManager;
 use OCA\EndToEndEncryption\E2EEnabledPathCache;
+use OCA\EndToEndEncryption\UserAgentManager;
 use OCP\Files\IRootFolder;
 use OCP\IRequest;
 use OCP\IUserSession;
@@ -49,7 +34,7 @@ class PropFindPluginTest extends TestCase {
 	/** @var UserAgentManager|\PHPUnit\Framework\MockObject\MockObject */
 	private $userAgentManager;
 
-	/** @var  IRequest|\PHPUnit\Framework\MockObject\MockObject */
+	/** @var IRequest|\PHPUnit\Framework\MockObject\MockObject */
 	private $request;
 
 	/** @var Server|\PHPUnit\Framework\MockObject\MockObject */
@@ -83,11 +68,12 @@ class PropFindPluginTest extends TestCase {
 		$server = $this->createMock(Server::class);
 
 		$server->expects($this->atLeast(2))
-		 ->method('on')
-		 ->withConsecutive(
-			['afterMethod:PROPFIND', [$this->plugin, 'checkAccess'], 50],
-			['propFind', [$this->plugin, 'updateProperty'], 105],
-		 );
+			->method('on')
+			->withConsecutive(
+				['afterMethod:PROPFIND', [$this->plugin, 'checkAccess'], 50],
+				['propFind', [$this->plugin, 'setEncryptedProperty'], 104],
+				['propFind', [$this->plugin, 'updateProperty'], 105],
+			);
 
 		$this->plugin->initialize($server);
 	}

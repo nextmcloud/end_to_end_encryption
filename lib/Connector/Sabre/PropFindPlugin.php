@@ -2,23 +2,8 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2017 Bjoern Schiessle <bjoern@schiessle.org>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 
@@ -26,8 +11,8 @@ namespace OCA\EndToEndEncryption\Connector\Sabre;
 
 use OCA\DAV\Connector\Sabre\Directory;
 use OCA\DAV\Connector\Sabre\Exception\Forbidden;
-use OCA\EndToEndEncryption\UserAgentManager;
 use OCA\EndToEndEncryption\E2EEnabledPathCache;
+use OCA\EndToEndEncryption\UserAgentManager;
 use OCP\Files\IRootFolder;
 use OCP\IRequest;
 use OCP\IUserSession;
@@ -37,15 +22,17 @@ use Sabre\DAV\Server;
 use Sabre\HTTP\RequestInterface;
 
 class PropFindPlugin extends APlugin {
+	public const IS_ENCRYPTED_PROPERTYNAME = '{http://nextcloud.org/ns}is-encrypted';
+
 	private UserAgentManager $userAgentManager;
 	private IRequest $request;
 	protected ?Server $server = null;
 
 	public function __construct(IRootFolder $rootFolder,
-								IUserSession $userSession,
-								UserAgentManager $userAgentManager,
-								IRequest $request,
-								E2EEnabledPathCache $pathCache) {
+		IUserSession $userSession,
+		UserAgentManager $userAgentManager,
+		IRequest $request,
+		E2EEnabledPathCache $pathCache) {
 		parent::__construct($rootFolder, $userSession, $pathCache);
 		$this->userAgentManager = $userAgentManager;
 		$this->request = $request;
@@ -59,7 +46,17 @@ class PropFindPlugin extends APlugin {
 
 		$this->server = $server;
 		$this->server->on('afterMethod:PROPFIND', [$this, 'checkAccess'], 50);
+		$this->server->on('propFind', [$this, 'setEncryptedProperty'], 104);
 		$this->server->on('propFind', [$this, 'updateProperty'], 105);
+	}
+
+	public function setEncryptedProperty(PropFind $propFind, \Sabre\DAV\INode $node) {
+		// Only folders can be e2e encrypted, so we only respond for directories.
+		if ($node instanceof Directory) {
+			$propFind->handle(self::IS_ENCRYPTED_PROPERTYNAME, function () use ($node) {
+				return $node->getFileInfo()->isEncrypted() ? '1' : '0';
+			});
+		}
 	}
 
 	/**

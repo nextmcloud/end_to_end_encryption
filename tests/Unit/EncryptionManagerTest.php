@@ -2,23 +2,8 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2017 Bjoern Schiessle <bjoern@schiessle.org>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 
@@ -38,27 +23,27 @@ use OCP\IUserSession;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 use PHPUnit_Framework_MockObject_MockObject;
-use Test\TestCase;
 use Psr\Log\LoggerInterface;
+use Test\TestCase;
 
 class EncryptionManagerTest extends TestCase {
 
-	/** @var  IRootFolder|PHPUnit_Framework_MockObject_MockObject */
+	/** @var IRootFolder|PHPUnit_Framework_MockObject_MockObject */
 	private $rootFolderInterface;
 
-	/** @var  Folder|PHPUnit_Framework_MockObject_MockObject */
+	/** @var Folder|PHPUnit_Framework_MockObject_MockObject */
 	private $rootFolder;
 
-	/** @var  IStorage|PHPUnit_Framework_MockObject_MockObject */
+	/** @var IStorage|PHPUnit_Framework_MockObject_MockObject */
 	private $storage;
 
-	/** @var  ICache|PHPUnit_Framework_MockObject_MockObject */
+	/** @var ICache|PHPUnit_Framework_MockObject_MockObject */
 	private $fileCache;
 
-	/** @var  IUserSession|PHPUnit_Framework_MockObject_MockObject */
+	/** @var IUserSession|PHPUnit_Framework_MockObject_MockObject */
 	private $userSession;
 
-	/** @var  IManager|PHPUnit_Framework_MockObject_MockObject */
+	/** @var IManager|PHPUnit_Framework_MockObject_MockObject */
 	private $shareManager;
 
 	/** @var IDBConnection|PHPUnit_Framework_MockObject_MockObject */
@@ -173,8 +158,8 @@ class EncryptionManagerTest extends TestCase {
 	 * @return PHPUnit_Framework_MockObject_MockObject[]
 	 */
 	public function constructNestedNodes(): array {
-		$node1 = $this->getMockBuilder(Node::class)->disableOriginalConstructor()->getMock();
-		$node2 = $this->getMockBuilder(Node::class)->disableOriginalConstructor()->getMock();
+		$node1 = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
+		$node2 = $this->getMockBuilder(Folder::class)->disableOriginalConstructor()->getMock();
 		$node3 = $this->getMockBuilder(Node::class)->disableOriginalConstructor()->getMock();
 		$node1->expects($this->any())->method('getParent')->willReturn($node2);
 		$node1->expects($this->any())->method('getPath')->willReturn('/data/user');
@@ -213,18 +198,18 @@ class EncryptionManagerTest extends TestCase {
 			->willReturn($user);
 
 		$this->shareManager->method('getSharesBy')
-			 ->willReturnMap([
-			 	['userId123', IShare::TYPE_USER, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_GROUP, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_USERGROUP, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_LINK, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_EMAIL, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_REMOTE, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_CIRCLE, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_GUEST, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_REMOTE_GROUP, $node1, false, 1, []],
-			 	['userId123', IShare::TYPE_ROOM, $node1, false, 1, []],
-			 ]);
+			->willReturnMap([
+				['userId123', IShare::TYPE_USER, $node1, false, 1, []],
+				['userId123', IShare::TYPE_GROUP, $node1, false, 1, []],
+				['userId123', IShare::TYPE_USERGROUP, $node1, false, 1, []],
+				['userId123', IShare::TYPE_LINK, $node1, false, 1, []],
+				['userId123', IShare::TYPE_EMAIL, $node1, false, 1, []],
+				['userId123', IShare::TYPE_REMOTE, $node1, false, 1, []],
+				['userId123', IShare::TYPE_CIRCLE, $node1, false, 1, []],
+				['userId123', IShare::TYPE_GUEST, $node1, false, 1, []],
+				['userId123', IShare::TYPE_REMOTE_GROUP, $node1, false, 1, []],
+				['userId123', IShare::TYPE_ROOM, $node1, false, 1, []],
+			]);
 
 		self::invokePrivate($instance, 'isValidFolder', [42]);
 	}

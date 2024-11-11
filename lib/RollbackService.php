@@ -2,31 +2,16 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2020 Georg Ehrke <georg-nextcloud@ehrke.email>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 namespace OCA\EndToEndEncryption;
 
+use OCA\EndToEndEncryption\AppInfo\Application;
+use OCA\EndToEndEncryption\Db\LockMapper;
 use OCP\Files\Config\ICachedMountFileInfo;
 use OCP\Files\Config\IUserMountCache;
 use OCP\Files\Folder;
-use OCA\EndToEndEncryption\AppInfo\Application;
-use OCA\EndToEndEncryption\Db\LockMapper;
 use OCP\Files\IRootFolder;
 use Psr\Log\LoggerInterface;
 
@@ -55,11 +40,11 @@ class RollbackService {
 	private LoggerInterface $logger;
 
 	public function __construct(LockMapper $lockMapper,
-								IMetaDataStorage $metaDataStorage,
-								FileService $fileService,
-								IUserMountCache $userMountCache,
-								IRootFolder $rootFolder,
-								LoggerInterface $logger) {
+		IMetaDataStorage $metaDataStorage,
+		FileService $fileService,
+		IUserMountCache $userMountCache,
+		IRootFolder $rootFolder,
+		LoggerInterface $logger) {
 		$this->lockMapper = $lockMapper;
 		$this->metaDataStorage = $metaDataStorage;
 		$this->fileService = $fileService;
@@ -80,6 +65,7 @@ class RollbackService {
 		foreach ($locks as $lock) {
 			$mountPoints = $this->userMountCache->getMountsForFileId($lock->getId());
 			if (empty($mountPoints)) {
+				$this->metaDataStorage->clearTouchedFolders($lock->getToken());
 				$this->lockMapper->delete($lock);
 				continue;
 			}
@@ -99,6 +85,7 @@ class RollbackService {
 			}
 
 			if (strpos($firstMountPoint->getInternalPath(), 'files_trashbin/files/') === 0) {
+				$this->metaDataStorage->clearTouchedFolders($lock->getToken());
 				$this->lockMapper->delete($lock);
 				continue;
 			}
@@ -126,6 +113,7 @@ class RollbackService {
 				continue;
 			}
 
+			$this->metaDataStorage->clearTouchedFolders($lock->getToken());
 			$this->lockMapper->delete($lock);
 		}
 	}

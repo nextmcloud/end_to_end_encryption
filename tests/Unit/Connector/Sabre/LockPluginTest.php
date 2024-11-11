@@ -2,41 +2,27 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2020 Georg Ehrke <georg-nextcloud@ehrke.email>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 namespace OCA\EndToEndEncryption\Tests\Connector\Sabre;
 
+use OC\Files\Node\Node;
 use OCA\DAV\Connector\Sabre\Directory;
 use OCA\DAV\Connector\Sabre\Exception\FileLocked;
 use OCA\DAV\Connector\Sabre\Exception\Forbidden;
 use OCA\DAV\Connector\Sabre\File;
 use OCA\DAV\Upload\FutureFile;
 use OCA\EndToEndEncryption\Connector\Sabre\LockPlugin;
+use OCA\EndToEndEncryption\E2EEnabledPathCache;
 use OCA\EndToEndEncryption\LockManager;
 use OCA\EndToEndEncryption\UserAgentManager;
-use OCA\EndToEndEncryption\E2EEnabledPathCache;
-use OCP\Files\IRootFolder;
-use OC\Files\Node\Node;
-use OCP\IUserSession;
 use OCP\Files\Cache\ICache;
+use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\Files\Storage\IStorage;
+use OCP\IUserSession;
 use Sabre\CalDAV\ICalendar;
 use Sabre\DAV\INode;
 use Sabre\DAV\Server;
@@ -270,10 +256,10 @@ class LockPluginTest extends TestCase {
 	 * @param bool $expectsFileLocked
 	 */
 	public function testCheckLockForWrite(string $method,
-										  ?string $token,
-										  bool $isLocked,
-										  bool $expectsForbidden,
-										  bool $expectsFileLocked): void {
+		?string $token,
+		bool $isLocked,
+		bool $expectsForbidden,
+		bool $expectsFileLocked): void {
 		$plugin = $this->getMockBuilder(LockPlugin::class)
 			->setMethods(['isFile', 'getNode', 'isE2EEnabledPath', 'isE2EEnabledUserAgent'])
 			->setConstructorArgs([
@@ -393,16 +379,16 @@ class LockPluginTest extends TestCase {
 	 * @param bool $expectsFileLocked
 	 */
 	public function testCheckLockForWriteCopyMove(string $method,
-												  ?string $token,
-												  bool $isSrcE2E,
-												  bool $isDestE2E,
-												  bool $isSrcFutureFile,
-												  bool $isSrcLocked,
-												  bool $isDestLocked,
-												  bool $expectsReturn,
-												  bool $expectsForbidden1,
-												  bool $expectsForbidden2,
-												  bool $expectsFileLocked): void {
+		?string $token,
+		bool $isSrcE2E,
+		bool $isDestE2E,
+		bool $isSrcFutureFile,
+		bool $isSrcLocked,
+		bool $isDestLocked,
+		bool $expectsReturn,
+		bool $expectsForbidden1,
+		bool $expectsForbidden2,
+		bool $expectsFileLocked): void {
 		$plugin = $this->getMockBuilder(LockPlugin::class)
 			->setMethods(['isFile', 'getNode', 'isE2EEnabledPath', 'isE2EEnabledUserAgent'])
 			->setConstructorArgs([
@@ -469,8 +455,8 @@ class LockPluginTest extends TestCase {
 
 		$this->lockManager->method('isLocked')
 			->willReturnMap([
-				[42, $token, null, $isSrcLocked],
-				[1337, $token, null, $isDestLocked],
+				[42, $token, null, true, $isSrcLocked],
+				[1337, $token, null, true, $isDestLocked],
 			]);
 
 		$server = $this->createMock(Server::class);
@@ -563,7 +549,7 @@ class LockPluginTest extends TestCase {
 			])
 			->getMock();
 
-		$node = $this->createMock(Node::class);
+		$node = $this->createMock(Folder::class);
 		$node->expects($this->once())
 			->method('isEncrypted')
 			->willReturn(true);
@@ -586,16 +572,14 @@ class LockPluginTest extends TestCase {
 			])
 			->getMock();
 
-		$encryptedParentParentNode = $this->createMock(Node::class);
+		$encryptedParentParentNode = $this->createMock(Folder::class);
 		$encryptedParentParentNode->expects($this->once())
 			->method('isEncrypted')
 			->willReturn(true);
 		$encryptedParentParentNode->method('getId')
 			->willReturn(1);
-		$encryptedParentParentNode->method('getFileInfo')
-			->willReturn(['parent' => 0]);
 
-		$parentNode = $this->createMock(Node::class);
+		$parentNode = $this->createMock(Folder::class);
 		$parentNode->expects($this->once())
 			->method('isEncrypted')
 			->willReturn(false);
@@ -604,13 +588,8 @@ class LockPluginTest extends TestCase {
 			->willReturn($encryptedParentParentNode);
 		$parentNode->method('getId')
 			->willReturn(2);
-		$parentNode->method('getFileInfo')
-			->willReturn(['parent' => 1]);
 
 		$fileNode = $this->createMock(Node::class);
-		$fileNode->expects($this->atLeastOnce())
-			->method('isEncrypted')
-			->willReturn(false);
 		$cache = $this->createMock(ICache::class);
 		$cache->method('getNumericStorageId')
 			->willReturn(1);
@@ -649,16 +628,14 @@ class LockPluginTest extends TestCase {
 			])
 			->getMock();
 
-		$encryptedParentParentNode = $this->createMock(Node::class);
+		$encryptedParentParentNode = $this->createMock(Folder::class);
 		$encryptedParentParentNode->method('getId')
 			->willReturn(1);
-		$encryptedParentParentNode->method('getFileInfo')
-			->willReturn(['parent' => 0]);
 		$encryptedParentParentNode->expects($this->once())
 			->method('getPath')
 			->willReturn('/');
 
-		$parentNode = $this->createMock(Node::class);
+		$parentNode = $this->createMock(Folder::class);
 		$parentNode->expects($this->once())
 			->method('isEncrypted')
 			->willReturn(false);
@@ -667,8 +644,6 @@ class LockPluginTest extends TestCase {
 			->willReturn($encryptedParentParentNode);
 		$parentNode->method('getId')
 			->willReturn(2);
-		$parentNode->method('getFileInfo')
-			->willReturn(['parent' => 1]);
 
 		$cache = $this->createMock(ICache::class);
 		$cache->method('getNumericStorageId')
@@ -680,9 +655,6 @@ class LockPluginTest extends TestCase {
 			->willReturn($cache);
 
 		$fileNode = $this->createMock(Node::class);
-		$fileNode->expects($this->atLeastOnce())
-			->method('isEncrypted')
-			->willReturn(false);
 		$fileNode->expects($this->once())
 			->method('getParent')
 			->willReturn($parentNode);
@@ -691,8 +663,6 @@ class LockPluginTest extends TestCase {
 			->willReturn('/data/rere/re');
 		$fileNode->method('getId')
 			->willReturn(3);
-		$fileNode->method('getFileInfo')
-			->willReturn(['parent' => 2]);
 		$fileNode->method('getStorage')
 			->willReturn($storage);
 

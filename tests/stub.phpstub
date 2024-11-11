@@ -52,7 +52,7 @@ namespace OC\User {
     class NoUserException extends \Exception {}
 }
 
-namespace Sabre\Dav {
+namespace Sabre\DAV {
     class ServerPlugin {}
 
     class INode {
@@ -65,6 +65,7 @@ namespace Sabre\Dav {
         public function set(string $key, string $value, int $stuff) {}
         public function getPath(): string {}
         public function setPath(string $string): void {}
+	    public function handle($propertyName, $valueOrCallBack)
     }
 
     class Server {
@@ -94,7 +95,7 @@ namespace OCA\DAV\Upload {
     class FutureFile extends \Sabre\Dav\INode {}
 }
 
-namespace Sabre\Http {
+namespace Sabre\HTTP {
     class RequestInterface {
         public function getPath(): string {}
         public function getUrl(): string {}
@@ -116,7 +117,7 @@ namespace Sabre\Http {
     }
 }
 
-namespace Sabre\Dav\Exception {
+namespace Sabre\DAV\Exception {
     class Conflict extends \Exception {}
 
     class NotFound extends \Exception {}
@@ -325,38 +326,6 @@ namespace OCA\DAV\Connector\Sabre {
 	}
 }
 
-namespace OC\BackgroundJob {
-
-	use OCP\BackgroundJob\IJob;
-	use OCP\BackgroundJob\IJobList;
-	use OCP\ILogger;
-
-	abstract class TimedJob implements IJob {
-		public function execute(IJobList $jobList, ILogger $logger = null) {
-		}
-
-		abstract protected function run($argument);
-
-		public function setId(int $id) {
-		}
-
-		public function setLastRun(int $lastRun) {
-		}
-
-		public function setArgument($argument) {
-		}
-
-		public function getId() {
-		}
-
-		public function getLastRun() {
-		}
-
-		public function getArgument() {
-		}
-	}
-}
-
 namespace OC\Files\Mount {
 	use OC\Files\Filesystem;
 	use OC\Files\Storage\Storage;
@@ -371,10 +340,10 @@ namespace OC\Files\Mount {
 		protected $class;
 		protected $storageId;
 		protected $rootId = null;
-	
+
 		/** @var int|null */
 		protected $mountId;
-	
+
 		/**
 		 * @param string|\OCP\Files\Storage\IStorage $storage
 		 * @param string $mountpoint
@@ -387,7 +356,7 @@ namespace OC\Files\Mount {
 		public function __construct($storage, $mountpoint, $arguments = null, $loader = null, $mountOptions = null, $mountId = null) {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * get complete path to the mount point, relative to data/
 		 *
@@ -396,7 +365,7 @@ namespace OC\Files\Mount {
 		public function getMountPoint() {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * Sets the mount point path, relative to data/
 		 *
@@ -405,28 +374,28 @@ namespace OC\Files\Mount {
 		public function setMountPoint($mountPoint) {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * @return \OCP\Files\Storage\IStorage
 		 */
 		public function getStorage() {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * @return string
 		 */
 		public function getStorageId() {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * @return int
 		 */
 		public function getNumericStorageId() {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * @param string $path
 		 * @return string
@@ -434,14 +403,14 @@ namespace OC\Files\Mount {
 		public function getInternalPath($path) {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * @param callable $wrapper
 		 */
 		public function wrapStorage($wrapper) {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * Get a mount option
 		 *
@@ -452,7 +421,7 @@ namespace OC\Files\Mount {
 		public function getOption($name, $default) {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * Get all options for the mount
 		 *
@@ -461,18 +430,18 @@ namespace OC\Files\Mount {
 		public function getOptions() {
 			throw new \Exception('stub');
 		}
-	
+
 		/**
 		 * @return int
 		 */
 		public function getStorageRootId() {
 			throw new \Exception('stub');
 		}
-	
+
 		public function getMountId() {
 			throw new \Exception('stub');
 		}
-	
+
 		public function getMountType() {
 			throw new \Exception('stub');
 		}
@@ -677,5 +646,294 @@ namespace OC\Files\Storage\Wrapper{
 
 	class PermissionsMask extends Wrapper {
 		public function getQuota() {}
+	}
+}
+
+namespace OCA\Files_Sharing {
+	interface ISharedStorage extends \OCP\Files\Storage\IStorage
+	{
+	}
+
+	/**
+	 * Convert target path to source path and pass the function call to the correct storage provider
+	 */
+	class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements \OCA\Files_Sharing\ISharedStorage, \OCP\Files\Storage\IDisableEncryptionStorage
+	{
+	    public function __construct($arguments)
+	    {
+	    }
+	    /**
+	     * @inheritdoc
+	     */
+	    public function instanceOfStorage($class) : bool
+	    {
+	    }
+	    /**
+	     * @return string
+	     */
+	    public function getShareId()
+	    {
+	    }
+	    /**
+	     * get id of the mount point
+	     *
+	     * @return string
+	     */
+	    public function getId() : string
+	    {
+	    }
+	    /**
+	     * Get the permissions granted for a shared file
+	     *
+	     * @param string $path Shared target file path
+	     * @return int CRUDS permissions granted
+	     */
+	    public function getPermissions($path = '') : int
+	    {
+	    }
+	    public function isCreatable($path) : bool
+	    {
+	    }
+	    public function isReadable($path) : bool
+	    {
+	    }
+	    public function isUpdatable($path) : bool
+	    {
+	    }
+	    public function isDeletable($path) : bool
+	    {
+	    }
+	    public function isSharable($path) : bool
+	    {
+	    }
+	    public function fopen($path, $mode)
+	    {
+	    }
+	    /**
+	     * see https://www.php.net/manual/en/function.rename.php
+	     *
+	     * @param string $source
+	     * @param string $target
+	     * @return bool
+	     */
+	    public function rename($source, $target) : bool
+	    {
+	    }
+	    /**
+	     * return mount point of share, relative to data/user/files
+	     *
+	     * @return string
+	     */
+	    public function getMountPoint() : string
+	    {
+	    }
+	    /**
+	     * @param string $path
+	     */
+	    public function setMountPoint($path) : void
+	    {
+	    }
+	    /**
+	     * get the user who shared the file
+	     *
+	     * @return string
+	     */
+	    public function getSharedFrom() : string
+	    {
+	    }
+	    /**
+	     * @return \OCP\Share\IShare
+	     */
+	    public function getShare() : \OCP\Share\IShare
+	    {
+	    }
+	    /**
+	     * return share type, can be "file" or "folder"
+	     *
+	     * @return string
+	     */
+	    public function getItemType() : string
+	    {
+	    }
+	    public function getCache($path = '', $storage = null)
+	    {
+	    }
+	    public function getScanner($path = '', $storage = null)
+	    {
+	    }
+	    public function getOwner($path) : string
+	    {
+	    }
+	    public function getWatcher($path = '', $storage = null) : \OC\Files\Cache\Watcher
+	    {
+	    }
+	    /**
+	     * unshare complete storage, also the grouped shares
+	     *
+	     * @return bool
+	     */
+	    public function unshareStorage() : bool
+	    {
+	    }
+	    /**
+	     * @param string $path
+	     * @param int $type \OCP\Lock\ILockingProvider::LOCK_SHARED or \OCP\Lock\ILockingProvider::LOCK_EXCLUSIVE
+	     * @param \OCP\Lock\ILockingProvider $provider
+	     * @throws \OCP\Lock\LockedException
+	     */
+	    public function acquireLock($path, $type, \OCP\Lock\ILockingProvider $provider)
+	    {
+	    }
+	    /**
+	     * @param string $path
+	     * @param int $type \OCP\Lock\ILockingProvider::LOCK_SHARED or \OCP\Lock\ILockingProvider::LOCK_EXCLUSIVE
+	     * @param \OCP\Lock\ILockingProvider $provider
+	     */
+	    public function releaseLock($path, $type, \OCP\Lock\ILockingProvider $provider)
+	    {
+	    }
+	    /**
+	     * @param string $path
+	     * @param int $type \OCP\Lock\ILockingProvider::LOCK_SHARED or \OCP\Lock\ILockingProvider::LOCK_EXCLUSIVE
+	     * @param \OCP\Lock\ILockingProvider $provider
+	     */
+	    public function changeLock($path, $type, \OCP\Lock\ILockingProvider $provider)
+	    {
+	    }
+	    /**
+	     * @return array [ available, last_checked ]
+	     */
+	    public function getAvailability()
+	    {
+	    }
+	    /**
+	     * @param bool $isAvailable
+	     */
+	    public function setAvailability($isAvailable)
+	    {
+	    }
+	    public function getSourceStorage()
+	    {
+	    }
+	    public function getWrapperStorage()
+	    {
+	    }
+	    public function file_get_contents($path)
+	    {
+	    }
+	    public function file_put_contents($path, $data)
+	    {
+	    }
+	    /**
+	     * @return void
+	     */
+	    public function setMountOptions(array $options)
+	    {
+	    }
+	    public function getUnjailedPath($path)
+	    {
+	    }
+	}
+}
+
+namespace OCA\Files_Trashbin\Events {
+
+	use OCP\EventDispatcher\Event;
+	use OCP\Files\Node;
+
+	class MoveToTrashEvent extends Event {
+		/** @var bool */
+		private $moveToTrashBin;
+
+		/** @var Node */
+		private $node;
+
+		public function __construct(Node $node) {
+			$this->moveToTrashBin = true;
+			$this->node = $node;
+		}
+
+		/**
+		* get Node which will be deleted
+		*
+		* @return Node
+		*/
+		public function getNode() {
+			return $this->node;
+		}
+
+		/**
+		* disable trash bin for this operation
+		*/
+		public function disableTrashBin() {
+			$this->moveToTrashBin = false;
+		}
+
+		/**
+		* should the file be moved to the trash bin?
+		*
+		* @return bool
+		*/
+		public function shouldMoveToTrashBin() {
+			return $this->moveToTrashBin;
+		}
+	}
+}
+
+namespace OCA\Files_Versions\Events {
+
+	use OCP\EventDispatcher\Event;
+	use OCP\Files\Node;
+
+	/**
+	* Class CreateVersionEvent
+	*
+	* Event to allow other apps to disable versions for specific files
+	*
+	* @package OCA\Files_Versions
+	*/
+	class CreateVersionEvent extends Event {
+
+
+		/** @var bool */
+		private $createVersion;
+
+		/** @var Node */
+		private $node;
+
+		/**
+		* CreateVersionEvent constructor.
+		*
+		* @param Node $node
+		*/
+		public function __construct(Node $node) {
+			$this->createVersion = true;
+			$this->node = $node;
+		}
+
+		/**
+		* get Node of the file which should be versioned
+		*
+		* @return Node
+		*/
+		public function getNode(): Node {
+			return $this->node;
+		}
+
+		/**
+		* disable versions for this file
+		*/
+		public function disableVersions(): void {
+			$this->createVersion = false;
+		}
+
+		/**
+		* should a version be created for this file?
+		*
+		* @return bool
+		*/
+		public function shouldCreateVersion(): bool {
+			return $this->createVersion;
+		}
 	}
 }

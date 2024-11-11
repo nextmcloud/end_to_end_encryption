@@ -2,27 +2,13 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2020 Georg Ehrke <georg-nextcloud@ehrke.email>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 namespace OCA\EndToEndEncryption;
 
 use OCA\EndToEndEncryption\Connector\Sabre\RedirectRequestPlugin;
+use OCA\Files_Sharing\SharedStorage;
 use OCP\Files\Folder;
 use OCP\Files\Node;
 
@@ -56,7 +42,7 @@ class FileService {
 	}
 
 	/**
-	 * @return bool Whether this operation changed any files
+	 * @return bool Move and delete temporary files suffixed by .e2e-to-save and .e2e-to-delete
 	 */
 	public function finalizeChanges(Folder $folder): bool {
 		$intermediateFiles = $this->getIntermediateFiles($folder);
@@ -72,6 +58,12 @@ class FileService {
 
 		/** @var Node $intermediateFile */
 		foreach ($intermediateFiles['to_delete'] as $intermediateFile) {
+			// If shared to user, try to unshare it first
+			$storage = $intermediateFile->getStorage();
+			if ($storage->instanceOfStorage(SharedStorage::class) && $storage->unshareStorage()) {
+				continue;
+			}
+			// Otherwise delete it
 			$intermediateFile->delete();
 		}
 
@@ -83,11 +75,17 @@ class FileService {
 	 * @return array{to_save: Node[], to_delete: Node[]}
 	 */
 	private function getIntermediateFiles(Folder $folder): array {
-		$listing = $folder->getDirectoryListing();
 		$result = [
 			'to_save' => [],
 			'to_delete' => [],
 		];
+
+		// Special case when root folder is deleted/unshared
+		if ($this->isIntermediateFileToDelete($folder)) {
+			$result['to_delete'][] = $folder;
+		}
+
+		$listing = $folder->getDirectoryListing();
 
 		foreach ($listing as $node) {
 			if ($this->isIntermediateFileToSave($node)) {

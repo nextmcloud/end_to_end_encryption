@@ -2,51 +2,29 @@
 
 declare(strict_types=1);
 /**
- * SPDX-License-Identifier: AGPL-3.0+
- *
- * @copyright Copyright (c) 2017 Bjoern Schiessle <bjoern@schiessle.org>
- * @copyright Copyright (c) 2020 Georg Ehrke <georg-nextcloud@ehrke.email>
- *
- * @author Bjoern Schiessle <bjoern@schiessle.org>
- * @author Georg Ehrke <georg-nextcloud@ehrke.email>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 namespace OCA\EndToEndEncryption\Controller;
 
 use OC\User\NoUserException;
 use OCA\EndToEndEncryption\Exceptions\FileLockedException;
 use OCA\EndToEndEncryption\Exceptions\FileNotLockedException;
-use OCA\EndToEndEncryption\Exceptions\MissingMetaDataException;
 use OCA\EndToEndEncryption\FileService;
 use OCA\EndToEndEncryption\IMetaDataStorage;
 use OCA\EndToEndEncryption\LockManager;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\OCS\OCSBadRequestException;
 use OCP\AppFramework\OCS\OCSForbiddenException;
 use OCP\AppFramework\OCS\OCSNotFoundException;
+use OCP\AppFramework\OCS\OCSPreconditionFailedException;
 use OCP\AppFramework\OCSController;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\IRequest;
-use Psr\Log\LoggerInterface;
 use OCP\Share\IManager as ShareManager;
-use OCP\AppFramework\OCS\OCSBadRequestException;
+use Psr\Log\LoggerInterface;
 
 class LockingController extends OCSController {
 	private ?string $userId;
@@ -95,6 +73,11 @@ class LockingController extends OCSController {
 	 */
 	public function lockFolder(int $id, ?string $shareToken = null): DataResponse {
 		$e2eToken = $this->request->getParam('e2e-token', '');
+		$e2eCounter = (int)$this->request->getHeader('X-NC-E2EE-COUNTER');
+
+		if ($e2eCounter === 0) {
+			throw new OCSPreconditionFailedException($this->l10n->t('X-NC-E2EE-COUNTER is missing in the request'));
+		}
 
 		$ownerId = $this->getOwnerId($shareToken);
 
@@ -115,7 +98,7 @@ class LockingController extends OCSController {
 			throw new OCSForbiddenException($this->l10n->t('You are not allowed to create the lock'));
 		}
 
-		$newToken = $this->lockManager->lockFile($id, $e2eToken, $ownerId);
+		$newToken = $this->lockManager->lockFile($id, $e2eToken, $e2eCounter, $ownerId);
 		if ($newToken === null) {
 			throw new OCSForbiddenException($this->l10n->t('File already locked'));
 		}
@@ -137,7 +120,12 @@ class LockingController extends OCSController {
 	 * @throws OCSNotFoundException
 	 */
 	public function unlockFolder(int $id, ?string $shareToken = null): DataResponse {
+		$abort = $this->request->getParam('abort') === 'true';
 		$token = $this->request->getHeader('e2e-token');
+
+		if ($token === '') {
+			throw new OCSPreconditionFailedException($this->l10n->t('e2e-token is empty'));
+		}
 
 		$ownerId = $this->getOwnerId($shareToken);
 
@@ -152,15 +140,18 @@ class LockingController extends OCSController {
 			throw new OCSForbiddenException($this->l10n->t('You are not allowed to remove the lock'));
 		}
 
-		$hadChanges = $this->fileService->finalizeChanges($nodes[0]);
-
-		try {
-			$this->metaDataStorage->saveIntermediateFile($ownerId, $id);
-		} catch (MissingMetaDataException $ex) {
-			if ($hadChanges) {
-				throw $ex;
+		$touchFoldersIds = $this->metaDataStorage->getTouchedFolders($token);
+		foreach ($touchFoldersIds as $folderId) {
+			if ($abort) {
+				$this->fileService->revertChanges($userFolder->getById($folderId)[0]);
+				$this->metaDataStorage->deleteIntermediateFile($ownerId, $folderId);
+			} else {
+				$this->fileService->finalizeChanges($userFolder->getById($folderId)[0]);
+				$this->metaDataStorage->saveIntermediateFile($ownerId, $folderId);
 			}
 		}
+
+		$this->metaDataStorage->clearTouchedFolders($token);
 
 		try {
 			$this->lockManager->unlockFile($id, $token);

@@ -19,11 +19,11 @@ OC.L10N.register(
     "End-to-End Encryption" : "Enda-í-enda dulritun",
     "End-to-end encryption endpoint" : "Endapunktur fyrir enda-í-enda dulritun",
     "Limit to groups" : "Takmarka við hópa",
-    "Limit app usage to groups." : "Takmarka notkun forrits við tiltekna hópa.",
+    "Limit app usage to groups" : "Takmarka notkun forrits við tiltekna hópa",
     "Save" : "Vista",
     "End-to-end encryption" : "Enda-í-enda dulritun",
+    "Cancel" : "Hætta við",
     "Select or drop files" : "Veldu eða slepptu skrám",
-    "Metadata-file doesn't exist" : "Lýsigögn eru ekki til staðar",
-    "Provides the necessary endpoint to enable end-to-end encryption." : "Gefur nauðsynlegan tengipunkt fyrir enda-í-enda dulritun."
+    "Limit app usage to groups." : "Takmarka notkun forrits við tiltekna hópa."
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

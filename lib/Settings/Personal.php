@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-// SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+/**
+ * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 namespace OCA\EndToEndEncryption\Settings;
 
 use OCA\EndToEndEncryption\AppInfo\Application;
-use OCA\EndToEndEncryption\IKeyStorage;
 use OCA\EndToEndEncryption\Config;
+use OCA\EndToEndEncryption\IKeyStorage;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\Settings\ISettings;
 use OCP\IUserSession;
+use OCP\Settings\ISettings;
 
 class Personal implements ISettings {
 	private IKeyStorage $keyStorage;
@@ -31,7 +33,7 @@ class Personal implements ISettings {
 	}
 
 	public function getForm(): TemplateResponse {
-		assert($this->userId !== null, "We are always logged in inside the setting app");
+		assert($this->userId !== null, 'We are always logged in inside the setting app');
 
 		$hasKey = $this->keyStorage->publicKeyExists($this->userId)
 			&& $this->keyStorage->privateKeyExists($this->userId);
@@ -40,7 +42,7 @@ class Personal implements ISettings {
 		return new TemplateResponse(
 			Application::APP_ID,
 			'settings',
-			["canUseApp" => !$this->config->isDisabledForUser($this->userSession->getUser())]
+			['canUseApp' => !$this->config->isDisabledForUser($this->userSession->getUser())]
 		);
 	}
 

@@ -2,23 +2,8 @@
 
 declare(strict_types=1);
 /**
- * @copyright Copyright (c) 2017 Bjoern Schiessle <bjoern@schiessle.org>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 namespace OCA\EndToEndEncryption\Tests\Controller;
@@ -36,8 +21,8 @@ use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use OCP\IRequest;
-use Test\TestCase;
 use Psr\Log\LoggerInterface;
+use Test\TestCase;
 
 class KeyControllerTest extends TestCase {
 
@@ -66,7 +51,7 @@ class KeyControllerTest extends TestCase {
 	private $controller;
 
 	/** @var string valid CSR (CN set to "admin") */
-	private $validCSR = "-----BEGIN CERTIFICATE REQUEST-----
+	private $validCSR = '-----BEGIN CERTIFICATE REQUEST-----
 MIIC7jCCAdYCAQAwgagxCzAJBgNVBAYTAlVLMREwDwYDVQQIDAhTb21lcnNldDEU
 MBIGA1UEBwwLR2xhc3RvbmJ1cnkxHzAdBgNVBAoMFlRoZSBCcmFpbiBSb29tIExp
 bWl0ZWQxHzAdBgNVBAsMFlBIUCBEb2N1bWVudGF0aW9uIFRlYW0xDjAMBgNVBAMM
@@ -84,7 +69,7 @@ fqA3PS2td1gWqQCQthF9IWOCIxNI16lokVTgNCZKewXsn9Bjm3hsLLeJU9jBXyVN
 w7829dr37SuA2kQb86aVpqdL50v3HjCclXd7PfWiYqajuHaIsokBV5ly2IdQo4Cz
 AYzYQFPtjsDZ4Tju4VZKM4YpF2GwQgT7zhzDBvywGPqvfw==
 -----END CERTIFICATE REQUEST-----
-";
+';
 
 	/** @var string */
 	private $invalidCSR = "-----BEGIN CERTIFICATE REQUEST-----\nMIIC7jCCAdYCAQAwgagxCzAJBgNVBAYTAlVLMREwDwYDVQQIDAhTb21lcnNldDEU\nMBIGA1UEBwwLR2xhc3RvbmJ1cnkxHzAdBgNVBAoMFlRoZSBCcmFpbiBSb29tIExp\nbWl0ZWQxHzAdBgNVBAsMFlBIUCBEb2N1bWVudGF0aW9uIFRlYW0xDjAMBgNVBAMM\nBWFkbWluMR4wHAYJKoZIhvcNAQkBFg93ZXpAZXhhbXBsZS5jb20wggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHWU8rWlK3lud%2Fr5OQoilxypgIzbBf5pqM\nH0rpYwFv3uctnK5Lt3M%2BWY45XdJt98Pq8eQ0AbyAf3IuhnpF%2BX2Ej3QnCenZ0H%2BB\nJ6%2FmZXdo9f7IXa2wH5LtA2cmm1XWQWubN%2FJzr9psq%2BkxbocyGTQhNGeeB2OPcgyl\n73eddJNIbFVlNEzbdcBNNsSwKcB%2BLP%2FJyJ9e1HZ4af6CHdX2SG1HvO%2BdICdEuO2E\nmC9lM896MJFWwNns5mx453Y1FmxFmAi1zQAAP%2BAZ5Taqy6yCzqJ9Y4%2FFDRi1NC5V\nstnu9REuPYSS8YgsJwQE%2FDUd%2BI%2BUonkcDfac8PIH5p5YHpMq0ChvAgMBAAGgADAN\nBgkqhkiG9w0BAQUFAAOCAQEAh8YVAsAcPR5v7kv96UtkVI4xK6R9BdmVsnisxTpm\ng9JVbfji7kpxbSgXfRSozTG3bl9ynrck39%2F2SoFQGSGrW2iV%2BdrclftSk%2BuBFb1F\niXYEWJxYSz2CcUeijoBrBsarfmODgOHzmgXmCoOToz2DkdtM7g9INWkC06Do4pTQ\nfqA3PS2td1gWqQCQthF9IWOCIxNI16lokVTgNCZKewXsn9Bjm3hsLLeJU9jBXyVN\nw7829dr37SuA2kQb86aVpqdL50v3HjCclXd7PfWiYqajuHaIsokBV5ly2IdQo4Cz\nAYzYQFPtjsDZ4Tju4VZKM4YpF2GwQgT7zhzDBvywGPqvfw%3D%3D\n-----END+CERTIFICATE+REQUEST-----\n";
@@ -119,9 +104,9 @@ AYzYQFPtjsDZ4Tju4VZKM4YpF2GwQgT7zhzDBvywGPqvfw==
 	 * @dataProvider getPrivateKeyDataProvider
 	 */
 	public function testGetPrivateKey(?\Exception $keyStorageException,
-									  ?string $expectedException,
-									  ?string $expectedExceptionMessage,
-									  bool $expectLogger): void {
+		?string $expectedException,
+		?string $expectedExceptionMessage,
+		bool $expectLogger): void {
 		$privateKey = 'MY-SECRET-PRIVATE-KEY';
 		if ($keyStorageException) {
 			$this->keyStorage->expects($this->once())
@@ -179,9 +164,9 @@ AYzYQFPtjsDZ4Tju4VZKM4YpF2GwQgT7zhzDBvywGPqvfw==
 	 * @dataProvider deletePrivateKeyDataProvider
 	 */
 	public function testDeletePrivateKey(?\Exception $keyStorageException,
-										 ?string $expectedException,
-										 ?string $expectedExceptionMessage,
-										 bool $expectLogger): void {
+		?string $expectedException,
+		?string $expectedExceptionMessage,
+		bool $expectLogger): void {
 		if ($keyStorageException) {
 			$this->keyStorage->expects($this->once())
 				->method('deletePrivateKey')
@@ -237,11 +222,11 @@ AYzYQFPtjsDZ4Tju4VZKM4YpF2GwQgT7zhzDBvywGPqvfw==
 	 * @dataProvider setPrivateKeyDataProvider
 	 */
 	public function testSetPrivateKey(?\Exception $keyStorageException,
-									  ?string $expectedException,
-									  ?string $expectedExceptionMessage,
-									  bool $expectLogger,
-									  ?array $expectedData,
-									  ?int $expectedStatusCode): void {
+		?string $expectedException,
+		?string $expectedExceptionMessage,
+		bool $expectLogger,
+		?array $expectedData,
+		?int $expectedStatusCode): void {
 		$privateKey = 'MY-SECRET-PRIVATE-KEY';
 		if ($keyStorageException) {
 			$this->keyStorage->expects($this->once())
@@ -465,9 +450,9 @@ AYzYQFPtjsDZ4Tju4VZKM4YpF2GwQgT7zhzDBvywGPqvfw==
 	 * @dataProvider deletePublicKeyDataProvider
 	 */
 	public function testDeletePublicKey(?\Exception $keyStorageException,
-										?string $expectedException,
-										?string $expectedExceptionMessage,
-										bool $expectLogger): void {
+		?string $expectedException,
+		?string $expectedExceptionMessage,
+		bool $expectLogger): void {
 		if ($keyStorageException) {
 			$this->keyStorage->expects($this->once())
 				->method('deletePublicKey')
