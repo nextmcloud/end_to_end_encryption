@@ -55,7 +55,8 @@ export default {
 		return {
 			hasKey: loadState('end_to_end_encryption', 'hasKey'),
 			shouldDisplayWarning: false,
-			deleteEncryptedFiles: false,
+			deleteEncryptedFiles: true, // this is actually the only change to standard settings; TODO: upstream Nextcloud
+			modal: false,
 		}
 	},
 
