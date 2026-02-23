@@ -38,6 +38,11 @@ class ConfigController extends Controller {
 			return new JSONResponse([], Http::STATUS_PRECONDITION_FAILED);
 		}
 
+		// force disable e2eeInBrowserEnabled
+		if ($key === 'e2eeInBrowserEnabled') {
+			$value = 'false';
+		}
+
 		$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
 		return new JSONResponse([], Http::STATUS_OK);
 	}
