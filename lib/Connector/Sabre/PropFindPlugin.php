@@ -66,17 +66,31 @@ class PropFindPlugin extends APlugin {
 			});
 
 			$propFind->handle(self::E2EE_METADATA_PROPERTYNAME, function () use ($node) {
-				if ($this->isE2EEnabledPath($node)) {
+				if (!$this->isE2EEnabledPath($node)) {
+					return null;
+				}
+
+				try {
 					return $this->metaDataStorage->getMetaData(
 						$this->userSession->getUser()->getUID(),
 						$node->getId(),
 					);
+				} catch (\Throwable $e) {
+					// Missing metadata must not break PROPFIND (avoid 500)
+					return null;
 				}
 			});
 
 			$propFind->handle(self::E2EE_METADATA_SIGNATURE_PROPERTYNAME, function () use ($node) {
-				if ($this->isE2EEnabledPath($node)) {
+				if (!$this->isE2EEnabledPath($node)) {
+					return null;
+				}
+
+				try {
 					return $this->metaDataStorage->readSignature($node->getId());
+				} catch (\Throwable $e) {
+					// Missing signature/metadata must not break PROPFIND (avoid 500)
+					return null;
 				}
 			});
 		}
