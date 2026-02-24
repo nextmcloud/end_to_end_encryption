@@ -2,7 +2,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 SPDX-License-Identifier: BSD-3-Clause
 SPDX-License-Identifier: MIT
 SPDX-FileCopyrightText: Anthony Fu <anthonyfu117@hotmail.com>
-SPDX-FileCopyrightText: Anthony Fu <https://github.com/antfu>
 SPDX-FileCopyrightText: Eric Norris (https://github.com/ericnorris)
 SPDX-FileCopyrightText: Feross Aboukhadijeh
 SPDX-FileCopyrightText: Jacob Clevenger<https://github.com/wheatjs>
@@ -30,10 +29,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 3.26.0
 	- license: MIT
 - @vueuse/components
-	- version: 11.0.1
-	- license: MIT
-- @vueuse/shared
-	- version: 11.0.1
+	- version: 11.3.0
 	- license: MIT
 - charenc
 	- version: 0.0.2
