@@ -22,7 +22,7 @@ import logger from '../services/logger.ts'
 const supportsE2EEInBrowser = typeof window.crypto !== 'undefined' && typeof window.crypto.subtle !== 'undefined'
 const hasKey = ref(loadState('end_to_end_encryption', 'hasKey'))
 const shouldDisplayWarning = ref(false)
-const deleteEncryptedFiles = ref(false)
+const deleteEncryptedFiles = ref(true)
 const shouldDisplayE2EEInBrowserWarning = ref(false)
 const userConfig = ref(loadState('end_to_end_encryption', 'userConfig', { e2eeInBrowserEnabled: false }))
 
@@ -33,7 +33,7 @@ const confirmationDialog = new DialogBuilder()
 		label: t('end_to_end_encryption', 'Cancel'),
 		variant: 'tertiary',
 		callback: () => {
-			deleteEncryptedFiles.value = false
+			deleteEncryptedFiles.value = true
 			shouldDisplayWarning.value = false
 		},
 	})
