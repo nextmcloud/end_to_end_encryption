@@ -52,7 +52,7 @@ class LoadAdditionalListener implements IEventListener {
 		$this->initialState->provideInitialState(
 			'userConfig',
 			[
-				'e2eeInBrowserEnabled' => $browserE2eeEnabled,
+				'e2eeInBrowserEnabled' => false,
 			]
 		);
 

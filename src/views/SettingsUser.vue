@@ -135,49 +135,51 @@ async function setConfig(key: string, value: string) {
 	<NcSettingsSection
 		:name="t('end_to_end_encryption', 'End-to-end encryption')"
 		:description="settingsSectionDescription">
-		<NcNoteCard
-			v-if="!supportsE2EEInBrowser"
-			type="warning"
-			:heading="t('end_to_end_encryption', 'End to end encryption not available')"
-			:text="t('end_to_end_encryption', 'Either your browser does not support end-to-end encryption or you are using an insecure connection (HTTP). Please use a modern browser and ensure you are using HTTPS.')" />
+		<template v-if="false">
+			<NcNoteCard
+				v-if="!supportsE2EEInBrowser"
+				type="warning"
+				:heading="t('end_to_end_encryption', 'End to end encryption not available')"
+				:text="t('end_to_end_encryption', 'Either your browser does not support end-to-end encryption or you are using an insecure connection (HTTP). Please use a modern browser and ensure you are using HTTPS.')" />
 
-		<NcButton
-			v-if="!shouldDisplayE2EEInBrowserWarning && userConfig['e2eeInBrowserEnabled'] === false"
-			class="margin-bottom"
-			:disabled="!supportsE2EEInBrowser"
-			variant="secondary"
-			@click="shouldDisplayE2EEInBrowserWarning = true">
-			{{ t('end_to_end_encryption', 'Enable E2EE navigation in browser') }}
-		</NcButton>
-		<NcNoteCard
-			v-else
-			class="notecard"
-			type="warning"
-			showAlert
-			:heading="t('end_to_end_encryption', 'Enabling E2EE in the browser can weaken security')">
 			<NcButton
-				v-if="userConfig['e2eeInBrowserEnabled'] === false"
-				class="close-button"
-				:aria-label="t('end_to_end_encryption', 'Close')"
-				variant="tertiary-no-background"
-				@click="shouldDisplayE2EEInBrowserWarning = false">
-				<template #icon>
-					<IconClose :size="20" />
-				</template>
-			</NcButton>
-
-			{{ t('end_to_end_encryption', 'The server could serve malicious source code to extract the secret that protects your files.') }}
-
-			<NcCheckboxRadioSwitch
-				data-cy-e2ee-settings-setting="e2ee_in_browser_enabled"
-				:disabled="!supportsE2EEInBrowser"
-				:modelValue="userConfig.e2eeInBrowserEnabled"
+				v-if="!shouldDisplayE2EEInBrowserWarning && userConfig['e2eeInBrowserEnabled'] === false"
 				class="margin-bottom"
-				type="switch"
-				@update:modelValue="value => setConfig('e2eeInBrowserEnabled', value)">
+				:disabled="!supportsE2EEInBrowser"
+				variant="secondary"
+				@click="shouldDisplayE2EEInBrowserWarning = true">
 				{{ t('end_to_end_encryption', 'Enable E2EE navigation in browser') }}
-			</NcCheckboxRadioSwitch>
-		</NcNoteCard>
+			</NcButton>
+			<NcNoteCard
+				v-else
+				class="notecard"
+				type="warning"
+				showAlert
+				:heading="t('end_to_end_encryption', 'Enabling E2EE in the browser can weaken security')">
+				<NcButton
+					v-if="userConfig['e2eeInBrowserEnabled'] === false"
+					class="close-button"
+					:aria-label="t('end_to_end_encryption', 'Close')"
+					variant="tertiary-no-background"
+					@click="shouldDisplayE2EEInBrowserWarning = false">
+					<template #icon>
+						<IconClose :size="20" />
+					</template>
+				</NcButton>
+
+				{{ t('end_to_end_encryption', 'The server could serve malicious source code to extract the secret that protects your files.') }}
+
+				<NcCheckboxRadioSwitch
+					data-cy-e2ee-settings-setting="e2ee_in_browser_enabled"
+					:disabled="!supportsE2EEInBrowser"
+					:modelValue="userConfig.e2eeInBrowserEnabled"
+					class="margin-bottom"
+					type="switch"
+					@update:modelValue="value => setConfig('e2eeInBrowserEnabled', value)">
+					{{ t('end_to_end_encryption', 'Enable E2EE navigation in browser') }}
+				</NcCheckboxRadioSwitch>
+			</NcNoteCard>
+		</template>
 
 		<NcButton
 			v-if="!shouldDisplayWarning"
