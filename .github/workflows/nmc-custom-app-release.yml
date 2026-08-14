@@ -33,7 +33,8 @@ on:
           - stable29
           - stable30
           - stable32
-        default: stable32
+          - stable-2
+        default: stable-2
 
 jobs:
   check-custom:
