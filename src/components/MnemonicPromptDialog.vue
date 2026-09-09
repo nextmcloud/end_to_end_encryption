@@ -29,7 +29,7 @@ function submit() {
 
 const buttons = computed(() => [
 	{
-		label: t('end_to_en_encryption', 'Submit'),
+		label: t('end_to_end_encryption', 'Submit'),
 		type: 'submit',
 		variant: 'primary',
 		disabled: !isFormValid.value,
