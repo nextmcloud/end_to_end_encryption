@@ -39,7 +39,7 @@ class Personal implements ISettings {
 		$this->initialState->provideInitialState(
 			'userConfig',
 			[
-				'e2eeInBrowserEnabled' => $this->config->getUserValue($this->userId, 'end_to_end_encryption', 'e2eeInBrowserEnabled', 'false') === 'true',
+				'e2eeInBrowserEnabled' => false,
 			]
 		);
 
