@@ -53,11 +53,18 @@ class MetaDataStorage implements IMetaDataStorage {
 		}
 
 		$folderName = $this->getFolderNameForFileId($id);
-		$folder = $this->appData->getFolder($folderName);
 
-		return $folder
-			->getFile($this->metaDataFileName)
-			->getContent();
+		try {
+			$folder = $this->appData->getFolder($folderName);
+		} catch (NotFoundException $e) {
+			throw new MissingMetaDataException('Meta-data folder missing');
+		}
+
+		try {
+			return $folder->getFile($this->metaDataFileName)->getContent();
+		} catch (NotFoundException $e) {
+			throw new MissingMetaDataException('Meta-data file missing');
+		}
 	}
 
 	/**
