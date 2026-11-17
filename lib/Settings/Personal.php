@@ -39,8 +39,7 @@ class Personal implements ISettings {
 		$this->initialState->provideInitialState(
 			'userConfig',
 			[
-				'e2eeInBrowserEnabled' => $this->config->getUserValue($this->userId, 'end_to_end_encryption', 'e2eeInBrowserEnabled', 'false') === 'true',
-				Config::DEBUG_TOOLS_ENABLED => $this->config->getUserValue($this->userId, Application::APP_ID, Config::DEBUG_TOOLS_ENABLED, 'false') === 'true',
+				'e2eeInBrowserEnabled' => false,
 			]
 		);
 		$this->initialState->provideInitialState('debugToolsAllowed', $this->e2eConfig->isDebugToolsAllowed());
