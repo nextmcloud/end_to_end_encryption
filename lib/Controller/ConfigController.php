@@ -40,8 +40,9 @@ class ConfigController extends Controller {
 			return new JSONResponse([], Http::STATUS_PRECONDITION_FAILED);
 		}
 
-		if ($key === Config::DEBUG_TOOLS_ENABLED && $value === 'true' && !$this->e2eConfig->isDebugToolsAllowed()) {
-			return new JSONResponse([], Http::STATUS_FORBIDDEN);
+		// force disable e2eeInBrowserEnabled
+		if ($key === 'e2eeInBrowserEnabled') {
+			$value = false;
 		}
 
 		$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);

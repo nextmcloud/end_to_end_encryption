@@ -54,8 +54,7 @@ class LoadAdditionalListener implements IEventListener {
 		$this->initialState->provideInitialState(
 			'userConfig',
 			[
-				'e2eeInBrowserEnabled' => $browserE2eeEnabled,
-				Config::DEBUG_TOOLS_ENABLED => $this->userId !== null && $this->e2eConfig->isDebugToolsEnabled($this->userId),
+				'e2eeInBrowserEnabled' => false,
 			]
 		);
 
