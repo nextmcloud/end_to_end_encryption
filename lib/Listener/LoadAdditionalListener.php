@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace OCA\EndToEndEncryption\Listener;
 
 use OCA\EndToEndEncryption\AppInfo\Application;
+use OCA\EndToEndEncryption\Config;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCP\AppFramework\Services\IInitialState;
@@ -27,6 +28,7 @@ class LoadAdditionalListener implements IEventListener {
 		private IInitialState $initialState,
 		private IConfig $config,
 		private ?string $userId,
+		private Config $e2eConfig,
 	) {
 	}
 

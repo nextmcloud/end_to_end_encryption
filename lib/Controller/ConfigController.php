@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace OCA\EndToEndEncryption\Controller;
 
 use OCA\EndToEndEncryption\AppInfo\Application;
+use OCA\EndToEndEncryption\Config;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
@@ -23,6 +24,7 @@ class ConfigController extends Controller {
 		IRequest $request,
 		private IConfig $config,
 		private ?string $userId,
+		private Config $e2eConfig,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -34,7 +36,7 @@ class ConfigController extends Controller {
 			return new JSONResponse([], Http::STATUS_PRECONDITION_FAILED);
 		}
 
-		if (!in_array($key, ['e2eeInBrowserEnabled'])) {
+		if (!in_array($key, ['e2eeInBrowserEnabled', Config::DEBUG_TOOLS_ENABLED])) {
 			return new JSONResponse([], Http::STATUS_PRECONDITION_FAILED);
 		}
 

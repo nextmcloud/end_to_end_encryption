@@ -42,6 +42,7 @@ class Personal implements ISettings {
 				'e2eeInBrowserEnabled' => false,
 			]
 		);
+		$this->initialState->provideInitialState('debugToolsAllowed', $this->e2eConfig->isDebugToolsAllowed());
 
 		$canUseApp = !$this->e2eConfig->isDisabledForUser($this->userSession->getUser());
 		if ($canUseApp) {
